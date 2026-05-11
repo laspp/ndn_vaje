@@ -173,7 +173,7 @@ module obi_slave_template #(
 
 
     // ============================================================
-    //  TODO (5): Error Logic
+    //  TODO (5): Error Logic, optional 
     //
     //  Assert obi_err_o when a request targets an address that
     //  does not exist in your peripheral.
