@@ -88,29 +88,30 @@ OBI_seg7_display #(
     .OBI_ADDR_WIDTH (AW),
     .OBI_DATA_WIDTH (DW)
 ) u_obi_seg7 (
-    .obi_clk_i    (clock),
-    .obi_rstn_i   (resetn),
-    .obi_req_i    (S_obi_req[2]),
-    .obi_gnt_o    (S_obi_gnt[2]),
-    .obi_addr_i   (S_obi_addr[2]),
-    .obi_we_i     (S_obi_we[2]),
-    .obi_wdata_i  (S_obi_wdata[2]),
-    .obi_be_i     (S_obi_be[2]),
-    .obi_rready_i (S_obi_rready[2]),
-    .obi_rvalid_o (S_obi_rvalid[2]),
-    .obi_rdata_o  (S_obi_rdata[2]),
-    .obi_err_o    (S_obi_err[2]),
+    .obi_clk_i     (clock),
+    .obi_rstn_i    (resetn),
+    .obi_req_i     (slave_obi_req[3]),
+    .obi_gnt_o     (slave_obi_gnt[3]),
+    .obi_addr_i    (slave_obi_addr[3]),
+    .obi_we_i      (slave_obi_we[3]),
+    .obi_wdata_i  (slave_obi_wdata[3]),
+    .obi_be_i      (slave_obi_be[3]),
+    .obi_rready_i (1), // always ready to accept data
+    .obi_rvalid_o (slave_obi_rvalid[3]),
+    .obi_rdata_o  (slave_obi_rdata[3]),
+    .obi_err_o     (slave_obi_err[3])
     // External signals
     .anode_select (anode_select),
     .segs         (segs)
 );
 ```
 
-Do not forget to update the `NUM_PERIPHERALS` parameter to **3** in the FPROv3 top-level module, and ensure the default error assignments cover the remaining unused slots:
+
+Do not forget to update the genvar loop starting index to **4** in the FPROv3 top-level module, and ensure the default error assignments cover the remaining unused slots:
 
 ```verilog
 genvar i;
-for (i = 3; i < NUM_PERIPHERALS; i++) begin : gen_unused
+for (i = 4; i < NUM_PERIPHERALS; i++) begin : gen_unused
     assign S_obi_err[i]    = 1'b1;
     assign S_obi_rvalid[i] = 1'b0;
     assign S_obi_rdata[i]  = 32'hFFFFFFFF;
@@ -130,10 +131,10 @@ In FPROv3 the base address of each peripheral is calculated as:
 base_address = (0xC0 << 24) + (peripheral_index × 0x80)
 ```
 
-For the 7-segment display (peripheral index 2):
+For the 7-segment display (peripheral index 3):
 
 ```
-base_address = 0xC0000000 + (2 × 0x80) = 0xC0000100
+base_address = 0xC0000000 + (3 × 0x80) = 0xC0000180
 ```
 
 To access a specific register, add its offset to the base address.
@@ -141,7 +142,7 @@ To access a specific register, add its offset to the base address.
 #### Example code
 
 ```c
-volatile uint32_t* seg7_base = (volatile uint32_t*)0xC0000100;
+volatile uint32_t* seg7_base = (volatile uint32_t*)0xC0000180;
 
 // Enable the display (Config_reg at offset 0x00)
 *(seg7_base + 0) = 0x1;
