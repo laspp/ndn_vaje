@@ -134,7 +134,7 @@ base_address = (0xC0 << 24) + (peripheral_index × 0x80)
 For the 7-segment display (peripheral index 3):
 
 ```
-base_address = 0xC0000000 + (3 × 0x80) = 0xC0000180
+base_address = 0xC0000000 + (4 × 0x80) = 0xC0000200
 ```
 
 To access a specific register, add its offset to the base address.
