@@ -142,7 +142,7 @@ To access a specific register, add its offset to the base address.
 #### Example code
 
 ```c
-volatile uint32_t* seg7_base = (volatile uint32_t*)0xC0000180;
+volatile uint32_t* seg7_base = (volatile uint32_t*)0xC0000200;
 
 // Enable the display (Config_reg at offset 0x00)
 *(seg7_base + 0) = 0x1;
